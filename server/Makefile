@@ -1,4 +1,4 @@
-NAME	=	server
+NAME	=	uchat_server
 
 CFLG	=	-std=c11 $(addprefix -W, all extra error pedantic) -g
 
@@ -15,8 +15,9 @@ all: install
 install: $(NAME)
 
 $(NAME): $(OBJ_FILES)
-	@clang $(CFLG) $(OBJ_FILES) -o $@
+	@clang $(CFLG) $(OBJ_FILES) -lsqlite3 -o $@
 	@printf "\r\33[2K$@ \033[32;1mcreated\033[0m\n"
+	@mv $(NAME) ../$@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_FILES)
 	@clang $(CFLG) -c $< -o $@ -I$(INC_DIR) -I$(LMX_INC)
@@ -33,7 +34,8 @@ clean:
 
 uninstall:
 	@rm -rf $(OBJ_DIR)
-	@rm -rf $(NAME)
+	@rm -rf ../$(NAME)
+	@rm -rf test.db
 	@printf "$(NAME) \033[31;1muninstalled\033[0m\n"
 
 reinstall: uninstall all
